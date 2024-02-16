@@ -1,31 +1,31 @@
-/*********************************************************************************
-
-WEB322 – Assignment 02
-I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
-
-Name: __Pushapdeep Singh Khural____________________ 
-Student ID: ___142557222___________ 
-Date: __31 Jan, 2023______________
-Cyclic Web App URL: ____https://tiny-cyan-crayfish-cape.cyclic.app___________________________________________________
-GitHub Repository URL: ____https://github.com/DeepSingh03/web322-app.git__________________________________________________
-
-********************************************************************************/ 
-
 const express = require('express');
 const path = require('path');
-const storeService = require('./store-service'); 
+const storeService = require('./store-service');
+const multer = require("multer");
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+
 const app = express();
+
+// Set up multer upload
+const upload = multer();
+
+// Set up Cloudinary configuration
+cloudinary.config({
+    cloud_name: 'dnbvpdklc',
+    api_key: 769892587259137,
+    api_secret: 'aB3DAmOfVB6ZzNAewQkpjdNjJX4',
+    secure: true
+});
 
 const HTTP_PORT = process.env.PORT || 8080;
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-   
     res.sendFile(path.join(__dirname, '/views/about.html'));
 });
 
 app.get('/about', (req, res) => {
-    
     res.sendFile(path.join(__dirname, '/views/about.html'));
 });
 
@@ -39,13 +39,45 @@ app.get('/shop', (req, res) => {
         });
 });
 
+// Route to get all items with optional filters
 app.get('/items', (req, res) => {
-    storeService.getItems()
-        .then((allItems) => {
-            res.json(allItems);
+    // Check for query parameters
+    if (req.query.category) {
+        storeService.getItemsByCategory(req.query.category)
+            .then((items) => {
+                res.json(items);
+            })
+            .catch((err) => {
+                res.status(500).send({ message: err });
+            });
+    } else if (req.query.minDate) {
+        storeService.getItemsByMinDate(req.query.minDate)
+            .then((items) => {
+                res.json(items);
+            })
+            .catch((err) => {
+                res.status(500).send({ message: err });
+            });
+    } else {
+        storeService.getItems()
+            .then((allItems) => {
+                res.json(allItems);
+            })
+            .catch((err) => {
+                res.status(500).send({ message: err });
+            });
+    }
+});
+
+// Route to get a single item by ID
+app.get('/item/:id', (req, res) => {
+    const itemId = req.params.id;
+    storeService.getItemById(itemId)
+        .then((item) => {
+            res.json(item);
         })
         .catch((err) => {
-            res.json({ message: err });
+            res.status(500).send({ message: err });
         });
 });
 
@@ -59,10 +91,63 @@ app.get('/categories', (req, res) => {
         });
 });
 
+// Route for serving the addItem.html file
+app.get('/items/add', (req, res) => {
+    res.sendFile(path.join(__dirname, '/views/addItem.html'));
+});
+
+// POST route for adding an item
+app.post('/items/add', upload.single('featureImage'), (req, res) => {
+    if(req.file){
+        let streamUpload = (req) => {
+            return new Promise((resolve, reject) => {
+                let stream = cloudinary.uploader.upload_stream(
+                    (error, result) => {
+                        if (result) {
+                            resolve(result);
+                        } else {
+                            reject(error);
+                        }
+                    }
+                );
+
+                streamifier.createReadStream(req.file.buffer).pipe(stream);
+            });
+        };
+
+        async function upload(req) {
+            let result = await streamUpload(req);
+            console.log(result);
+            return result;
+        }
+
+        upload(req).then((uploaded)=>{
+            processItem(req, res, uploaded.url); // Pass req and res objects here
+        });
+    } else {
+        processItem(req, res, ""); // Pass req and res objects here
+    }
+});
+
+// Function to process item after upload
+function processItem(req, res, imageUrl){ // Receive req and res objects as parameters
+    req.body.featureImage = imageUrl;
+
+    storeService.addItem(req.body)
+        .then((item) => {
+            console.log('Item added successfully:', item);
+            res.redirect('/items');
+        })
+        .catch((err) => {
+            console.error('Error adding item:', err);
+            res.status(500).send('Error adding item');
+        });
+}
+
 storeService.initialize()
     .then(() => {
-        app.listen(HTTP_PORT, () => console.log(`Express http server listening on port ${HTTP_PORT}`)); 
+        app.listen(HTTP_PORT, () => console.log(`Express http server listening on port ${HTTP_PORT}`));
     })
     .catch((err) => {
-        console.error(`Error initializing store-service: ${err}`); 
+        console.error(`Error initializing store-service: ${err}`);
     });
