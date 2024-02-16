@@ -1,3 +1,19 @@
+
+/*********************************************************************************
+*  WEB322 – Assignment 03
+*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
+*  of this assignment has been copied manually or electronically from any other source 
+*  (including 3rd party web sites) or distributed to other students.
+* 
+*  Name: __Pushapdeep Singh Khural__ Student ID: _142557222_ Date: _15/02/2024_
+*
+*  Cyclic Web App URL: ____https://tiny-cyan-crayfish-cape.cyclic.app/____________________________________________________
+* 
+*  GitHub Repository URL: ___https://github.com/DeepSingh03/web322-app.git___________________________________________________
+*
+********************************************************************************/ 
+
+
 const express = require('express');
 const path = require('path');
 const storeService = require('./store-service');
