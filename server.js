@@ -6,7 +6,7 @@
 * 
 *  Name: __Pushapdeep Singh Khural__ Student ID: _142557222_ Date: _15/02/2024_
 *
-*  Cyclic Web App URL: ____https://weak-tan-bee-tux.cyclic.app/____________________________________________________
+*  Cyclic Web App URL: ____https://ill-ruby-abalone-wear.cyclic.app/shop____________________________________________________
 * 
 *  GitHub Repository URL: ___https://github.com/DeepSingh03/web322-app.git___________________________________________________
 *
