@@ -4,9 +4,9 @@
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
 * 
-*  Name: __Pushapdeep Singh Khural__ Student ID: _142557222_ Date: _15/02/2024_
+*  Name: __Pushapdeep Singh Khural__ Student ID: _142557222_ Date: _10/04/2024_
 *
-*  Cyclic Web App URL: ____https://weak-tan-bee-tux.cyclic.app/____________________________________________________
+*  Cyclic Web App URL: ____https://rose-tiny-zebra.cyclic.app/shop____________________________________________________
 * 
 *  GitHub Repository URL: ___https://github.com/DeepSingh03/web322-app.git___________________________________________________
 *
