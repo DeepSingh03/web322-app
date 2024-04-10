@@ -21,7 +21,7 @@
               <strong>Category:</strong>
               {{data.post.category}}<br />
               <strong>Last Updated:</strong>
-              {{data.post.postDate}}
+              {{formatDate data.post.postDate}}
             </div>
           </div>
         </div>
@@ -34,8 +34,6 @@
     </div>
     {{/if}}    
   </section>
-
- <!-- Sidebar content -->
   <aside class="col-md-3">
     {{#if data.items}}
     <h4>Items</h4>
